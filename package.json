@@ -1,0 +1,24 @@
+{
+  "name": "MuMoo",
+  "version": "0.0.1",
+  "description": "LambdaMoo inspired social platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coyotebringsfire/MuMoo.git"
+  },
+  "keywords": [
+    "LambdaMoo",
+    "Moo",
+    "social"
+  ],
+  "author": "coyotebringsfire <aumkara@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coyotebringsfire/MuMoo/issues"
+  },
+  "homepage": "https://github.com/coyotebringsfire/MuMoo"
+}
