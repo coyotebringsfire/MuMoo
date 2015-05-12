@@ -113,7 +113,7 @@ describe("connect", function() {
 			child.stdin.write("connect INVALIDUSER WRONGPASSWORD\n");
 			setTimeout(function() {
 				child.kill();
-				stdout.should.containEql("<password> - connect with the given password");
+				stdout.should.containEql("Invalid username/password combination");
 				done();
 			}, 100);
 		}, 100);

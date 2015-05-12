@@ -32,7 +32,7 @@ function onMongoLoginError(err) {
 
 function onIncomingConnection(client) {
 	var _id=undefined;
-	
+
 	log("Incoming connection");
 	connection_count++;
 	var connection_status=constants.PENDING_LOGIN;
@@ -72,7 +72,7 @@ function onIncomingConnection(client) {
 		}
 
 		function onLoginError(err) {
-			client.stdout.write("Invalid username/password combination\n"+_prompt);
+			client.write("Invalid username/password combination\n"+_prompt);
 			debug("caught login error");
 		}
 
