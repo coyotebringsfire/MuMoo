@@ -27,6 +27,7 @@
     "should": "^6.0.1"
   },
   "dependencies": {
+    "colors": "^1.1.0",
     "mongodb": "^2.0.31",
     "q": "^1.2.0",
     "sandbox": "^0.8.6",

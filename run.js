@@ -20,7 +20,7 @@ function onMongoLoginSuccess() {
 	};
 
 	log("Connected to MongoDB");
-	var _db=login.db, _id=undefined;
+	
 	log("Starting server on %d", constants.LISTEN_PORT);
 	telnet.createServer( onIncomingConnection ).listen(constants.LISTEN_PORT);
 }
@@ -31,42 +31,65 @@ function onMongoLoginError(err) {
 }
 
 function onIncomingConnection(client) {
-	var _id=undefined;
+	var lastActive=Date.now(), 
+		pingInterval, 
+		connection_status=constants.PENDING_LOGIN,  
+		_id=undefined;
+
+	function clearPing() {
+		clearInterval(pingInterval);
+	}
+	function ping() {
+		debug("pinging %s", _id);
+		if( Date.now() - lastActive > 5*60*1000 ) {
+			log("closing idle connection %s", _id);
+			onClose();
+		}
+	}
 
 	log("Incoming connection");
 	connection_count++;
-	var connection_status=constants.PENDING_LOGIN;
+
+	// TODO every minute, check if the connection is still alive
+	pingInterval=setInterval( ping, 60*1000 );
+
+	function onError(err) {
+		debug("onError %j", arguments);
+		// TODO maybe call onClose()
+		//onClose();
+	}
 
 	function onClose() {
-		function onMongoLogout(err) {
-			_id=undefined;
+	 	log("Client disconnected");
+	 	connection_count--;
+	 	clearPing();
+	 	if( _id ) {
+			login.db.collection('users').update({_id:_id}, {"$set":{logged_in:false}}, function onLoggedOut(err) {
+				_id=undefined;
+				log("logged out");
+				client.end();
+			});
+		} else {
 			client.end();
 		}
-		
-	 	if( _id ) {
-		 	login.db.collection('users').findAndModify({_id:_id}, { "$set": { "logged_in":false } }, onMongoLogout);
-		 	return false;
-		 } else {
-		 	log("Client disconnected");
-		 	connection_count--;
-		 }
+	}
+
+	function onLoggedIn(data) {
+		var _data=data.toString().trim().split(' ');
+		log("Processing command %j", _data);
+		//TODO search for _data[0] in verbs attached to the current player, objects on the player, objects in the room that the player is in, and global verbs
+		client.write("coming soon\n"+_prompt);
 	}
 
 	function onPendingLogin(data) {
 		var _data=data.toString().trim().split(' ');
 
 		function onLoginSuccess(result) {
-			function onLoggedIn(data) {
-				var _data=data.toString().trim().split(' ');
-				log("Processing command %j", _data);
-				//TODO search for _data[0] in verbs attached to the current player, objects on the player, objects in the room that the player is in, and global verbs
-				client.write("coming soon\n"+_prompt);
-			}
-			debug("login success:\n %j", result);
+			debug("login success: %j", result);
 			_id=result._id;
 			client.removeListener('data', onPendingLogin);
 			// login success
-			debug("status: %s");
+			debug("status: %s", connection_status);
 			connection_status=constants.LOGGED_IN;
 			client.on('data', onLoggedIn);
 		}
@@ -81,6 +104,8 @@ function onIncomingConnection(client) {
 		}
 
 		log("Processing command %j", _data);
+
+		// TODO update 'last_seen' property for user
 		switch(_data[0]) {
 			case 'help':
 				login.help(client);
@@ -140,8 +165,8 @@ function onIncomingConnection(client) {
 
 	// listen for commands from the client
 	client.on('data', onPendingLogin);
-
 	client.on('close', onClose);
+	client.on('error', onError);
 
 	var motd=fs.readFileSync('doc/motd.txt').toString();
 
