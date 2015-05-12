@@ -71,13 +71,52 @@ describe("connect", function() {
 			}, 100);
 		}, 100);
 	});
-	it("should give usage help if no password is given", function(done) {
-		should.fail();
-		done();
+	it("should connect as guest user", function(done) {
+		var child=child_process.exec("telnet localhost 9999"),
+			stdout="";
+		child.stdout.on('data', function onData(data) {
+			stdout+=data;
+		});
+		setTimeout(function() {
+			child.stdin.write("connect Guest\n");
+			setTimeout(function() {
+				child.kill();
+				var welcome_guest=fs.readFileSync(__dirname+"/../doc/welcome_guest.txt").toString();
+				debug("stdout: %j\nwelcome_guest.txt: %j", stdout, welcome_guest);
+				stdout.should.containEql(welcome_guest);
+				done();
+			}, 100);
+		}, 100);
 	});
-	it("should report an error when a wrong username/password cobination is given", function(done) {
-		should.fail();
-		done();
+	it("should give usage help if no password is given", function(done) {
+		var child=child_process.exec("telnet localhost 9999"),
+			stdout="";
+		child.stdout.on('data', function onData(data) {
+			stdout+=data;
+		});
+		setTimeout(function() {
+			child.stdin.write("connect INVALIDUSER\n");
+			setTimeout(function() {
+				child.kill();
+				stdout.should.containEql("<password> - connect with the given password");
+				done();
+			}, 100);
+		}, 100);
+	});
+	it("should report an error when a wrong username/password combination is given", function(done) {
+		var child=child_process.exec("telnet localhost 9999"),
+			stdout="";
+		child.stdout.on('data', function onData(data) {
+			stdout+=data;
+		});
+		setTimeout(function() {
+			child.stdin.write("connect INVALIDUSER WRONGPASSWORD\n");
+			setTimeout(function() {
+				child.kill();
+				stdout.should.containEql("<password> - connect with the given password");
+				done();
+			}, 100);
+		}, 100);
 	});
 });
 
