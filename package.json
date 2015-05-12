@@ -2,9 +2,10 @@
   "name": "MuMoo",
   "version": "0.0.1",
   "description": "LambdaMoo inspired social platform",
-  "main": "index.js",
+  "main": "run.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node run"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,15 @@
   "bugs": {
     "url": "https://github.com/coyotebringsfire/MuMoo/issues"
   },
-  "homepage": "https://github.com/coyotebringsfire/MuMoo"
+  "homepage": "https://github.com/coyotebringsfire/MuMoo",
+  "devDependencies": {
+    "debug": "^2.2.0",
+    "should": "^6.0.1"
+  },
+  "dependencies": {
+    "mongodb": "^2.0.31",
+    "q": "^1.2.0",
+    "sandbox": "^0.8.6",
+    "telnet": "0.0.1"
+  }
 }

@@ -1,0 +1,24 @@
+                          ***************************
+                          *    Welcome to MuMOO!    *
+                          ***************************
+                                       
+                         Running Version %s of MuMOO
+
+PLEASE NOTE:
+   MuMOO is a new kind of society, where thousands of people voluntarily
+come together from all over the world.  What these people say or do may not
+always be to your liking; as when visiting any international city, it is wise
+to be careful who you associate with and what you say.
+   The operators of MuMOO have provided the materials for the buildings of
+this community, but are not responsible for what is said or done in them.  In
+particular, you must assume responsibility if you permit minors or others to
+access MuMOO through your facilities.  The statements and viewpoints
+expressed here are not necessarily those of the wizards, John Davis,
+and those parties disclaim any responsibility for them.
+
+NOTICE FOR JOURNALISTS AND RESEARCHERS:
+  The citizens of MuMOO request that you ask for permission from all
+direct participants before quoting any material collected here.
+
+For assistance either now or later, type `help'.
+

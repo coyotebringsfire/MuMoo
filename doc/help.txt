@@ -1,0 +1,16 @@
+Type `connect <character-name> <password>'     to connect to your character, 
+     `connect Guest'     to connect to a guest character,
+     `create'            to see how to get a character of your own,
+     `@who'              just to see who's logged in right now,
+     `@uptime'           to see how long the server has been running,
+     `@version'          to see what version of the server we're running, or
+     `@quit'             to disconnect, either now or later.
+
+For example, `connect Munchkin frebblebit' would connect to the character
+`Munchkin' if `frebblebit' were the right password.
+
+After you've connected, type
+     `help'              for more documentation.
+
+Please email bug/crash reports (but NOT character-creation requests)
+to %s

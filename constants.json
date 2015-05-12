@@ -1,0 +1,8 @@
+{
+	"PROMPT": "> ",
+	"ADMIN_EMAIL": "aumkara@gmail.com",
+	"LISTEN_PORT": 9999,
+	"PENDING_LOGIN": 0.0,
+	"PENDING_PASSWORD": 0.1,
+	"LOGGED_IN": 1.0
+}

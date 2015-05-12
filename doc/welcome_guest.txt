@@ -1,0 +1,11 @@
+Guests at MuMOO are warned that they are accountable for
+their actions here. In particular, Guests are warned that any
+mail or other form of communication sent to individual characters
+here, may be traced back to the site from which you are logged
+in; this information may be used in the event of a complaint
+against you and may be made available to someone acting in an
+official capacity.  Logging into LambdaMOO as a Guest implies
+that you have read and understood this warning and that you
+accept these facts - and that in the event of any need to use
+your site information in the aforementioned manner, you agree to
+its use.
