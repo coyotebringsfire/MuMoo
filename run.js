@@ -105,6 +105,7 @@ function onIncomingConnection(client) {
 		}
 
 		log("Processing command %j", _data);
+		client.write("\n");
 
 		// TODO update 'last_seen' property for user
 		switch(_data[0]) {
