@@ -179,7 +179,7 @@ function onIncomingConnection(client) {
 }
 
 log("Connecting to MongoDB");
-login=new Login(util.format("mongodb://%s:%s@%s:%d/%s", config.mongo.username, config.mongo.password, config.mongo.hostname, config.mongo.port, config.mongo.dbname);
+login=new Login(util.format("mongodb://%s%s:%d/%s", config.mongo.username.length>0?config.mongo.username+config.mongo.password+"@":"", config.mongo.hostname, config.mongo.port, config.mongo.dbname) );
 Q(login.connectPromise)
 	.then( onMongoLoginSuccess )
 	.catch( onMongoLoginError);
