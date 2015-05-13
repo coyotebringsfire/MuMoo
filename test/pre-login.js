@@ -3,9 +3,11 @@ var should=require('should'),
 	child_process=require('child_process'),
 	util=require('util'),
 	constants=require('../constants.json'),
+	_prompt=constants.PROMPT,
 	pkg=require('../package.json'),
 	debug=require('debug')('MuMoo:Login:debug'),
-	fs=require('fs');
+	fs=require('fs'),
+	async=require('async');
 
 describe("motd", function() {
 	it("should display the motd", function(done) {
@@ -159,8 +161,38 @@ describe("@uptime", function() {
 
 describe("@who", function() {
 	it("should list the username of everyone logged on", function(done) {
-		should.fail();
-		done();
+		var children=[];
+		async.times(5, function connectGuest(n, finished) {
+			var child=child_process.exec("telnet localhost 9999");
+			children.push(child);
+
+			setTimeout(function() {
+				child.stdin.write("connect guest\n");
+				setTimeout(function() {
+					finished();
+				}, 100);
+			}, 100);
+		}, function after(err) {
+			debug("all guests logged in");
+		});
+		var child=child_process.exec("telnet localhost 9999"), stdout="";
+
+		child.stdout.on('data', function onOut(data) {
+			stdout+=data.toString();
+			if( stdout.match(_prompt) ) {
+				debug("checking output\n%s", stdout);
+				stdout.should.match(_prompt);
+
+				debug("killing children %j", children);
+				async.each( children, function eachChild(child, finished) {
+					child.kill();
+					finished();
+				}, function() {
+					done();
+				});
+			}
+		});
+		child.stdin.write("@who\n");
 	});
 });
 
