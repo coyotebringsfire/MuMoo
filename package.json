@@ -1,5 +1,5 @@
 {
-  "name": "MuMoo",
+  "name": "mumoo",
   "version": "0.0.1",
   "description": "LambdaMoo inspired social platform",
   "main": "run.js",
@@ -24,9 +24,11 @@
   "homepage": "https://github.com/coyotebringsfire/MuMoo",
   "devDependencies": {
     "debug": "^2.2.0",
-    "should": "^6.0.1"
+    "should": "^6.0.1",
+    "mocha": "~2.2.4"
   },
   "dependencies": {
+    "acl": "^0.4.7",
     "async": "^0.9.0",
     "colors": "^1.1.0",
     "mongodb": "^2.0.31",

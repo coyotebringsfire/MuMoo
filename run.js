@@ -8,6 +8,7 @@ var telnet=require('telnet'),
 	debug=require('debug')('MuMoo:debug'),
 	log=require('debug')('MuMoo:log'),
 	constants=require('./constants.json'),
+	config=require('./config.json'),
 	_prompt=constants.PROMPT,
 	pkg=require('./package.json'),
 	connection_count=0,
@@ -114,6 +115,7 @@ function onIncomingConnection(client) {
 		}
 
 		log("Processing command %j", _data);
+		client.write("\n");
 
 		// TODO update 'last_seen' property for user
 		switch(_data[0]) {
@@ -189,7 +191,7 @@ function onIncomingConnection(client) {
 
 //TODO maybe refactor to use cluster module
 log("Connecting to MongoDB");
-login=new Login("mongodb://localhost:27017/MuMoo");
+login=new Login(util.format("mongodb://%s%s:%d/%s", config.mongo.username.length>0?config.mongo.username+config.mongo.password+"@":"", config.mongo.hostname, config.mongo.port, config.mongo.dbname) );
 Q(login.connectPromise)
 	.then( onMongoLoginSuccess )
 	.catch( onMongoLoginError);

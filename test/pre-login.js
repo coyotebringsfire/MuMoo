@@ -160,39 +160,81 @@ describe("@uptime", function() {
 });
 
 describe("@who", function() {
+	var children=[];
 	it("should list the username of everyone logged on", function(done) {
-		var children=[];
-		async.times(5, function connectGuest(n, finished) {
-			var child=child_process.exec("telnet localhost 9999");
-			children.push(child);
-
-			setTimeout(function() {
-				child.stdin.write("connect guest\n");
-				setTimeout(function() {
+		var stdout="", 
+			guests=[
+				"rainbow_guest", 
+				"red_guest", 
+				"green_guest", 
+				"blue_guest", 
+				"yellow_guest",
+				"magenta_guest",
+				"cyan_guest", 
+				"gray_guest",
+				"neon_guest"
+				];
+		async.series([
+			function connectGuests(next) {
+				async.timesSeries(5, function connectGuest(n, finished) {
+					debug("connecting guest");
+					var child=child_process.exec("telnet localhost 9999");
+					children.push(child);
 					finished();
-				}, 100);
-			}, 100);
-		}, function after(err) {
-			debug("all guests logged in");
-		});
-		var child=child_process.exec("telnet localhost 9999"), stdout="";
-
-		child.stdout.on('data', function onOut(data) {
-			stdout+=data.toString();
-			if( stdout.match(_prompt) ) {
-				debug("checking output\n%s", stdout);
-				stdout.should.match(_prompt);
-
-				debug("killing children %j", children);
-				async.each( children, function eachChild(child, finished) {
-					child.kill();
-					finished();
-				}, function() {
-					done();
+				}, function(err, results) {
+					next();
 				});
-			}
-		});
-		child.stdin.write("@who\n");
+			}, function loginGuests(next) {
+				async.eachSeries(children, function doConnect(child, finished) {
+					debug("connect guest");
+					child.stdin.write("connect guest\n");
+					finished();
+				}, next);
+			}, function checkCommand(next) {
+				var child=child_process.exec("telnet localhost 9999"), stdout="";
+
+				child.stdout.on('data', function onOut(data) {
+					stdout+=data.toString();
+				});
+				child.stdin.write("@who\n");
+				setTimeout(function() {
+					//debug("checking output\n%s\n%s", stdout, _prompt);
+					var outlines=stdout.split('\n'), startLine=undefined, endLine=undefined, whoOutput, o;
+					//console.log(outlines);
+					// TODO find where the @who command starts and ends
+					for( o=0; o<outlines.length; o++) {
+						debug("comparing output line %s", outlines[o]);
+						if( outlines[o].match(_prompt) && startLine==undefined )
+							startLine=o+1;
+						else
+							endLine=o
+					}
+					whoOutput=outlines.slice(startLine, endLine);
+					debug("who %j", whoOutput);
+					whoOutput.length.should.equal(5);
+					//every guest in whoOutput should match a guest username
+					async.each( whoOutput, function(who_line, finished) {
+						debug("checking %s", who_line);
+						guests.should.containEql(who_line);
+						finished();
+					}, function(err) {
+						debug("done checking guest names");
+					});
+					child.kill();
+					next();
+				}, 500);
+			}], function() {
+				done();
+			});
+	});
+
+	after(function(done) {
+		debug("killing children");
+		async.each( children, function eachChild(child, finished) {
+			debug("killing child");
+			child.kill();
+			finished();
+		}, done);
 	});
 });
 
