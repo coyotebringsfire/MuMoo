@@ -12,7 +12,8 @@ var telnet=require('telnet'),
 	pkg=require('./package.json'),
 	connection_count=0,
 	start_of_day=Date.now(),
-	Q=require('Q');
+	Q=require('Q'),
+	world=require('./lib/World');
 
 function onMongoLoginSuccess() {
 	String.prototype.trim = function() {
@@ -20,9 +21,17 @@ function onMongoLoginSuccess() {
 	};
 
 	log("Connected to MongoDB");
-	
-	log("Starting server on %d", constants.LISTEN_PORT);
-	telnet.createServer( onIncomingConnection ).listen(constants.LISTEN_PORT);
+
+	log("Loading world");
+	var world=new World();
+	world.on( 'done', function onWorldLoaded() {
+		log("Starting server on %d", constants.LISTEN_PORT);
+		telnet.createServer( onIncomingConnection ).listen(constants.LISTEN_PORT);
+	});
+
+	world.on( 'err', function onLoadError(err) {
+		log("Error loading the world %j", err);
+	});
 }
 
 function onMongoLoginError(err) {
@@ -31,6 +40,7 @@ function onMongoLoginError(err) {
 }
 
 function onIncomingConnection(client) {
+	//TODO use clustering to start a new session
 	var lastActive=Date.now(), 
 		pingInterval, 
 		connection_status=constants.PENDING_LOGIN,  
@@ -177,6 +187,7 @@ function onIncomingConnection(client) {
 	log('client connected');
 }
 
+//TODO maybe refactor to use cluster module
 log("Connecting to MongoDB");
 login=new Login("mongodb://localhost:27017/MuMoo");
 Q(login.connectPromise)
