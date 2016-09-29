@@ -1,0 +1,80 @@
+#-3 Nothing
+#-2 Nowhere
+#-1 Noone
+
+#0 MooObject
+- name
+- description
+- aliases
+- location #-2
+- owner #-1
+- contents
+- parent #-1
+- children [ #2, #3 ]
+- isPlayer false
+- acl []
+- verbs
+	examine this
+	give this
+	clone this
+	drop this
+	take this
+
+#2 Room
+- parent - #0
+- children [ #8 ]
+- verbs
+	examine this
+	say any
+	emote any
+	go any
+	look
+
+#3 Player
+- parent - #0
+- children [ #4, #5 ]
+- isPlayer true
+- gender
+	- pronouns
+- verbs
+	examine this
+	tell this
+	quit
+	who
+
+#4 Guest
+- parent #3
+- children []
+- verbs
+	request any
+
+#5 Programmer
+- parent #3
+- children [ #6 ]
+- verbs
+	edit any
+
+#6 Wizard
+- parent #5
+- children [ #7 ]
+- verbs
+	approve
+	reject
+	chpassword
+	chname
+	chemail
+	ban
+	unban
+	kick
+	traceroute
+
+#7 Archwizard
+- parent #6
+- children []
+- verbs
+	promote
+	demote
+
+#8 Limbo
+- parent #2
+- children []
